@@ -28,8 +28,23 @@ let deleteUser = (userId) => {
     })
 };
 
-let listUsers = () => {
-    return readFile().then(json => (json.users || {}));
+// if pass a groupId, filter out users that have been assigned to this group
+let listUsers = (groupId) => {
+    return readFile().then(json => {
+        let {users, groupUsers} = json;
+
+        if (groupId) { // filter for groupId
+            let userIds = Object.keys(groupUsers[groupId] || {});
+            return Object.keys(users).reduce((carry, userId) => {
+                if (!contains(userIds, userId)) {
+                    carry[userId] = users[userId];
+                }
+                return carry;
+            }, {});
+        }
+
+        return users || {};
+    });
 };
 
 let createGroup = (group) => {
@@ -58,7 +73,6 @@ let listGroups = (userId) => {
         let {groups, groupUsers} = json;
 
         if (userId) {
-            console.log(userId);
             return Object.keys(groups).reduce((carry, groupId) => {
                 if (!groupUsers[groupId]) {
                     carry[groupId] = groups[groupId];
@@ -93,8 +107,28 @@ let addUserToGroups = (data) => {
         });
         return json;
     }).then(toJson).then(saveToFile);
-
 };
+
+let addUsersToGroup = (data) => {
+    return readFile().then(json => {
+
+        let {users, groupUsers} = json;
+
+        let {grouplist: groupId, userlist: userIds} = data, group;
+
+        if (!groupUsers[groupId]) {
+            groupUsers[groupId] = {};
+        }
+
+        group = groupUsers[groupId];
+
+        userIds.forEach(userId => {
+            group[userId] = users[userId];
+        });
+
+        return json;
+    }).then(toJson).then(saveToFile);
+}
 
 exports.createUser = createUser;
 exports.deleteUser = deleteUser;
@@ -105,3 +139,4 @@ exports.deleteGroup = deleteGroup;
 exports.listGroups = listGroups;
 
 exports.addUserToGroups = addUserToGroups;
+exports.addUsersToGroup = addUsersToGroup;

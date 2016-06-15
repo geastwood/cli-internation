@@ -21,7 +21,7 @@ let deleteUser = (username) => {
     }))
 };
 
-let listUsers = () => io.listUsers().then(toChoiceArray);
+let listUsers = (groupId) => io.listUsers(groupId).then(toChoiceArray);
 
 
 let createGroup = (groupname) => {
@@ -45,6 +45,8 @@ let listGroups = (userId) => io.listGroups(userId).then(toChoiceArray);
 
 let addUserToGroups = io.addUserToGroups;
 
+let addUsersToGroup = io.addUsersToGroup;
+
 exports.createUser = createUser;
 exports.deleteUser = deleteUser;
 exports.listUsers = listUsers;
@@ -54,3 +56,4 @@ exports.deleteGroup = deleteGroup;
 exports.listGroups = listGroups;
 
 exports.addUserToGroups = addUserToGroups;
+exports.addUsersToGroup = addUsersToGroup;
