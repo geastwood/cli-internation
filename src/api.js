@@ -49,6 +49,8 @@ let addUsersToGroup = io.addUsersToGroup;
 
 let usersInGroup = (groupId) => io.usersInGroup(groupId).then(toChoiceArray);
 
+let userGroups = (userId) => io.userGroups(userId).then(toChoiceArray);
+
 let removeUsersFromGroup = io.removeUsersFromGroup;
 
 exports.createUser = createUser;
@@ -63,3 +65,4 @@ exports.addUserToGroups = addUserToGroups;
 exports.addUsersToGroup = addUsersToGroup;
 exports.removeUsersFromGroup = removeUsersFromGroup;
 exports.usersInGroup = usersInGroup;
+exports.userGroups = userGroups;

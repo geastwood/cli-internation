@@ -146,6 +146,19 @@ let removeUsersFromGroup = data => {
     }).then(toJson).then(saveToFile);
 };
 
+let userGroups = userId => {
+    return readFile().then(json => {
+        let {groups, groupUsers} = json;
+        return Object.keys(groupUsers).reduce((carry, groupId) => {
+            let groupUser = groupUsers[groupId];
+            if (contains(Object.keys(groupUser), userId)) {
+                carry[groupId] = groups[groupId];
+            }
+            return carry;
+        }, {});
+    });
+};
+
 exports.createUser = createUser;
 exports.deleteUser = deleteUser;
 exports.listUsers = listUsers;
@@ -157,4 +170,5 @@ exports.listGroups = listGroups;
 exports.addUserToGroups = addUserToGroups;
 exports.addUsersToGroup = addUsersToGroup;
 exports.usersInGroup = usersInGroup;
+exports.userGroups = userGroups;
 exports.removeUsersFromGroup = removeUsersFromGroup;

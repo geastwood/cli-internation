@@ -1,5 +1,5 @@
 let inquirer = require('inquirer');
-let {createUser, deleteUser, listUsers, listGroups, addUserToGroups} = require('./api');
+let {createUser, deleteUser, listUsers, listGroups, addUserToGroups, userGroups} = require('./api');
 
 let userCli = action => {
     if (action === 'create') {
@@ -43,8 +43,12 @@ let list = () => {
         name: 'userlist',
         message: 'Current list of Users',
         choices: () => listUsers()
-    }).then(({userlist}) => {
-        console.log(`userId is ${userlist}`);
+    }).then(({userlist:userId}) => userGroups(userId)).then(data => {
+        if (data.length) {
+            console.log(`This user belongs to ${data.map(o => o.name).join(', ')}`);
+        } else {
+            console.log('This user doesn\'t belong to any group');
+        }
     });
 };
 

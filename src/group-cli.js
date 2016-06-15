@@ -48,7 +48,11 @@ let list = () => {
         message: 'Current list of Groups',
         choices: () => listGroups()
     }).then(({groupname}) => usersInGroup(groupname)).then((data) => {
-        console.log(`this group has users: ${data.map(o => o.name).join(', ')}`);
+        if (data.length) {
+            console.log(`This group has users: ${data.map(o => o.name).join(', ')}`);
+        } else {
+            console.log(`this group has no users`);
+        }
     });
 };
 
