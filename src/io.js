@@ -18,9 +18,12 @@ let createUser = (user) => {
 
 let deleteUser = (userId) => {
     return readFile().then(json => {
-        let {users} = json;
+        let {users, groupUsers} = json;
         if (users[userId]) {
             delete users[userId];
+            Object.keys(groupUsers).forEach(groupId => {
+                delete groupUsers[groupId][userId]
+            });
             return q.fcall(() => json).then(toJson).then(saveToFile);
         } else {
             return q.fcall(() => ({status: 1}))
@@ -111,9 +114,7 @@ let addUserToGroups = (data) => {
 
 let addUsersToGroup = (data) => {
     return readFile().then(json => {
-
         let {users, groupUsers} = json;
-
         let {grouplist: groupId, userlist: userIds} = data, group;
 
         if (!groupUsers[groupId]) {
@@ -128,7 +129,22 @@ let addUsersToGroup = (data) => {
 
         return json;
     }).then(toJson).then(saveToFile);
-}
+};
+
+let usersInGroup = groupId => readFile().then(json => json.groupUsers[groupId] || {});
+
+let removeUsersFromGroup = data => {
+    return readFile().then(json => {
+        let {groupUsers} = json;
+        let {grouplist: groupId, userlist: userIds} = data, group;
+
+        userIds.forEach(userId => {
+            delete groupUsers[groupId][userId];
+        });
+
+        return json;
+    }).then(toJson).then(saveToFile);
+};
 
 exports.createUser = createUser;
 exports.deleteUser = deleteUser;
@@ -140,3 +156,5 @@ exports.listGroups = listGroups;
 
 exports.addUserToGroups = addUserToGroups;
 exports.addUsersToGroup = addUsersToGroup;
+exports.usersInGroup = usersInGroup;
+exports.removeUsersFromGroup = removeUsersFromGroup;

@@ -14,8 +14,9 @@ program.command('user [cmd]')
     .action((cmd, opts) => {
         if (!contains(validUserCommands, cmd)) {
             console.log('Error', `${cmd} is not valid, only ${validUserCommands.join(', ')} supported`);
+        } else {
+            userCli(cmd).catch(errHandler);
         }
-        userCli(cmd).catch(errHandler);
     });
 
 program.command('group [cmd]')
@@ -23,8 +24,9 @@ program.command('group [cmd]')
     .action((cmd, opts) => {
         if (!contains(validGroupCommands, cmd)) {
             console.log('Error', `${cmd} is not valid, only ${validGroupCommands.join(', ')} supported`);
+        } else {
+            groupCli(cmd).catch(errHandler);
         }
-        groupCli(cmd).catch(errHandler);
     });
 
 program.parse(process.argv);

@@ -1,5 +1,5 @@
 let inquirer = require('inquirer');
-let {createGroup, deleteGroup, listGroups, listUsers, addUsersToGroup} = require('./api');
+let {createGroup, deleteGroup, listGroups, listUsers, addUsersToGroup, usersInGroup, removeUsersFromGroup} = require('./api');
 let q = require('q');
 
 let groupCli = action => {
@@ -12,6 +12,7 @@ let groupCli = action => {
     } else if (action === 'add-users') {
         return addUsers();
     } else if (action === 'remove-users') {
+        return removeUsers();
     }
 };
 
@@ -80,6 +81,40 @@ let addUsers = () => {
         } else {
             return q.fcall(() => {
                 console.log('No available user for this group');
+            })
+        }
+    })
+};
+
+let removeUsers = () => {
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'grouplist',
+            message: 'Current list of Users',
+            choices: () => listGroups()
+        },
+        {
+            type: 'checkbox',
+            name: 'userlist',
+            message: 'Current list of Users',
+            choices: ({grouplist}) => {
+                return usersInGroup(grouplist)
+            },
+            when: ({grouplist}) => {
+                return usersInGroup(grouplist).then(data => {
+                    return data.length === 0 ? false : true;
+                })
+            }
+        }
+    ]).then(({grouplist, userlist}) => {
+        if (userlist) {
+            return removeUsersFromGroup({grouplist, userlist}).then(() => {
+                console.log('remove users from group');
+            });
+        } else {
+            return q.fcall(() => {
+                console.log(`No available user for this group`);
             })
         }
     })
