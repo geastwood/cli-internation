@@ -1,0 +1,16 @@
+{
+  "name": "um-internation",
+  "version": "0.0.1",
+  "description": "CLI for user management",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cli",
+    "user",
+    "management"
+  ],
+  "author": "Fei Liu <liu.feiwood@gmail.com> (https://github.com/geastwood)",
+  "license": "ISC"
+}
