@@ -1,6 +1,15 @@
 let inquirer = require('inquirer');
-let {createGroup, deleteGroup, listGroups, listUsers, addUsersToGroup, usersInGroup, removeUsersFromGroup} = require('./api');
 let q = require('q');
+let {hasData} = require('./util');
+let {
+    createGroup,
+    deleteGroup,
+    listGroups,
+    listUsers,
+    addUsersToGroup,
+    usersInGroup,
+    removeUsersFromGroup
+    } = require('./api');
 
 let groupCli = action => {
     if (action === 'create') {
@@ -16,14 +25,13 @@ let groupCli = action => {
     }
 };
 
-
 let create = () => {
     return inquirer.prompt({
         type: 'input',
         name: 'groupname',
         message: 'Specify a group name'
     }).then(({groupname}) => createGroup(groupname))
-        .then(({name, id}) => console.log(name, id));
+        .then(({name, id}) => console.log(`Create group ${name} (${id})`));
 };
 
 let remove = () => {
@@ -36,7 +44,7 @@ let remove = () => {
             if (msg) {
                 console.log(msg);
             } else {
-                console.log('delete', name, id);
+                console.log(`Delete group ${name} (${id})`);
             }
         })
 };
@@ -46,12 +54,23 @@ let list = () => {
         type: 'list',
         name: 'groupname',
         message: 'Current list of Groups',
-        choices: () => listGroups()
-    }).then(({groupname}) => usersInGroup(groupname)).then((data) => {
-        if (data.length) {
-            console.log(`This group has users: ${data.map(o => o.name).join(', ')}`);
+        choices: () => listGroups(),
+        when: () => {
+            return listGroups().then(hasData)
+        }
+    }).then(({groupname}) => {
+        if (groupname) {
+            return usersInGroup(groupname).then((data) => {
+                if (data.length) {
+                    console.log(`This group has users: ${data.map(o => o.name).join(', ')}`);
+                } else {
+                    console.log(`this group has no users`);
+                }
+            })
         } else {
-            console.log(`this group has no users`);
+            return q.fcall(() => {
+                console.log('Currently no groups.');
+            })
         }
     });
 };
@@ -72,15 +91,13 @@ let addUsers = () => {
                 return listUsers(grouplist)
             },
             when: ({grouplist}) => {
-                return listUsers(grouplist).then(data => {
-                    return data.length === 0 ? false : true;
-                })
+                return listUsers(grouplist).then(hasData)
             }
         }
     ]).then(({grouplist, userlist}) => {
         if (userlist) {
             return addUsersToGroup({grouplist, userlist}).then(() => {
-                console.log('addUsersToGroup');
+                console.log('Add users to group.');
             });
         } else {
             return q.fcall(() => {
@@ -106,15 +123,13 @@ let removeUsers = () => {
                 return usersInGroup(grouplist)
             },
             when: ({grouplist}) => {
-                return usersInGroup(grouplist).then(data => {
-                    return data.length === 0 ? false : true;
-                })
+                return usersInGroup(grouplist).then(hasData)
             }
         }
     ]).then(({grouplist, userlist}) => {
         if (userlist) {
             return removeUsersFromGroup({grouplist, userlist}).then(() => {
-                console.log('remove users from group');
+                console.log('Remove users from group');
             });
         } else {
             return q.fcall(() => {

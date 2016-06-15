@@ -13,7 +13,7 @@ program.command('user [cmd]')
     .description(`user commands, ${validUserCommands.join('|')} defaults to 'list'`)
     .action((cmd = 'list', opts) => {
         if (!contains(validUserCommands, cmd)) {
-            console.log('Error', `${cmd} is not valid, only ${validUserCommands.join(', ')} supported`);
+            console.log(`${cmd} is not valid, only ${validUserCommands.join(', ')} supported`);
         } else {
             userCli(cmd).catch(errHandler);
         }
@@ -23,7 +23,7 @@ program.command('group [cmd]')
     .description(`group commands, ${validGroupCommands.join('|')} defaults to 'list'`)
     .action((cmd = 'list', opts) => {
         if (!contains(validGroupCommands, cmd)) {
-            console.log('Error', `${cmd} is not valid, only ${validGroupCommands.join(', ')} supported`);
+            console.log(`${cmd} is not valid, only ${validGroupCommands.join(', ')} supported`);
         } else {
             groupCli(cmd).catch(errHandler);
         }

@@ -1,5 +1,14 @@
 let inquirer = require('inquirer');
-let {createUser, deleteUser, listUsers, listGroups, addUserToGroups, userGroups} = require('./api');
+let q = require('q');
+let {hasData} = require('./util');
+let {
+    createUser,
+    deleteUser,
+    listUsers,
+    listGroups,
+    addUserToGroups,
+    userGroups
+    } = require('./api');
 
 let userCli = action => {
     if (action === 'create') {
@@ -19,7 +28,7 @@ let create = () => {
         name: 'username',
         message: 'Specify a username'
     }).then(({username}) => createUser(username))
-        .then(({name, id}) => console.log(name, id));
+        .then(({name, id}) => console.log(`Create user ${name} (${id})`));
 };
 
 let remove = () => {
@@ -32,7 +41,7 @@ let remove = () => {
             if (msg) {
                 console.log(msg);
             } else {
-                console.log('delete', name, id);
+                console.log(`Delete user ${name} (${id})`);
             }
         })
 };
@@ -42,12 +51,23 @@ let list = () => {
         type: 'list',
         name: 'userlist',
         message: 'Current list of Users',
-        choices: () => listUsers()
-    }).then(({userlist:userId}) => userGroups(userId)).then(data => {
-        if (data.length) {
-            console.log(`This user belongs to ${data.map(o => o.name).join(', ')}`);
+        choices: () => listUsers(),
+        when: () => {
+            return listUsers().then(hasData)
+        }
+    }).then(({userlist}) => {
+        if (userlist) {
+            return userGroups(userlist).then(data => {
+                if (data.length) {
+                    console.log(`This user belongs to ${data.map(o => o.name).join(', ')}`);
+                } else {
+                    console.log('This user doesn\'t belong to any group');
+                }
+            });
         } else {
-            console.log('This user doesn\'t belong to any group');
+            return q.fcall(() => {
+                console.log('currently no user');
+            })
         }
     });
 };
@@ -69,7 +89,7 @@ let addToGroups = () => {
             }
         }
     ]).then(addUserToGroups).then(() => {
-        console.log('save user to groups');
+        console.log('Add user to groups');
     });
 };
 

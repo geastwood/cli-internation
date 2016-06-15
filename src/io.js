@@ -21,7 +21,7 @@ let deleteUser = (userId) => {
         let {users, groupUsers} = json;
         if (users[userId]) {
             delete users[userId];
-            Object.keys(groupUsers).forEach(groupId => {
+            Object.keys((groupUsers || {})).forEach(groupId => {
                 delete groupUsers[groupId][userId]
             });
             return q.fcall(() => json).then(toJson).then(saveToFile);
@@ -74,6 +74,9 @@ let deleteGroup = (groupId) => {
 let listGroups = (userId) => {
     return readFile().then(json => {
         let {groups, groupUsers} = json;
+        if (!groupUsers) {
+            groupUsers = json.groupUsers = {};
+        }
 
         if (userId) {
             return Object.keys(groups).reduce((carry, groupId) => {
@@ -149,7 +152,7 @@ let removeUsersFromGroup = data => {
 let userGroups = userId => {
     return readFile().then(json => {
         let {groups, groupUsers} = json;
-        return Object.keys(groupUsers).reduce((carry, groupId) => {
+        return Object.keys((groupUsers || {})).reduce((carry, groupId) => {
             let groupUser = groupUsers[groupId];
             if (contains(Object.keys(groupUser), userId)) {
                 carry[groupId] = groups[groupId];
