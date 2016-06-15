@@ -1,11 +1,13 @@
 let inquirer = require('inquirer');
-let {createUser, deleteUser} = require('./api');
+let {createUser, deleteUser, listUsers} = require('./api');
 
 let userCli = action => {
     if (action === 'create') {
         return create();
     } else if (action === 'delete') {
         return remove();
+    } else if (action === 'list') {
+        return list();
     }
 };
 
@@ -31,6 +33,18 @@ let remove = () => {
                 console.log('delete', name, id);
             }
         })
+};
+
+
+let list = () => {
+    return inquirer.prompt({
+        type: 'list',
+        name: 'userlist',
+        message: 'Current list of Users',
+        choices: () => listUsers()
+    }).then(({userlist}) => {
+        console.log(`userId is ${userlist}`);
+    });
 };
 
 module.exports = userCli;

@@ -18,5 +18,10 @@ let deleteUser = (username) => {
     }))
 };
 
+let listUsers = () => io.listUsers().then(userListObj => {
+    return Object.keys(userListObj).map(userId => ({name: userListObj[userId].name, value: userId}))
+});
+
 exports.createUser = createUser;
 exports.deleteUser = deleteUser;
+exports.listUsers = listUsers;

@@ -27,5 +27,10 @@ let deleteUser = (userId) => {
     })
 };
 
+let listUsers = () => {
+    return readFile().then(json => (json.users || {}));
+};
+
 exports.createUser = createUser;
 exports.deleteUser = deleteUser;
+exports.listUsers = listUsers;
