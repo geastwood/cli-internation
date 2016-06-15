@@ -12,7 +12,10 @@ let createUser = (username) => {
 
 let deleteUser = (username) => {
     let id = sha1(username);
-    return io.deleteUser(id).then(() => ({name: username, id}))
+    return io.deleteUser(id).then((res) => ({
+        name: username, id,
+        msg: res && res.status === 1 ? 'user not exisit' : null
+    }))
 };
 
 exports.createUser = createUser;

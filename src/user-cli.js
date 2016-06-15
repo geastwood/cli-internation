@@ -24,7 +24,13 @@ let remove = () => {
         name: 'username',
         message: 'Specify a username'
     }).then(({username}) => deleteUser(username))
-        .then(({name, id}) => console.log(name, id));
+        .then(({name, id, msg}) => {
+            if (msg) {
+                console.log(msg);
+            } else {
+                console.log('delete', name, id);
+            }
+        })
 };
 
 module.exports = userCli;

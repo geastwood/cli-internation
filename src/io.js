@@ -18,9 +18,13 @@ let createUser = (user) => {
 let deleteUser = (userId) => {
     return readFile().then(json => {
         let {users} = json;
-        delete users[userId];
-        return json;
-    }).then(toJson).then(saveToFile);
+        if (users[userId]) {
+            delete users[userId];
+            return q.fcall(() => json).then(toJson).then(saveToFile);
+        } else {
+            return q.fcall(() => ({status: 1}))
+        }
+    })
 };
 
 exports.createUser = createUser;
