@@ -7,3 +7,5 @@ A command line interface for user management.
 * commander 
 * inquirer 
 * chalk
+* sha1
+* q

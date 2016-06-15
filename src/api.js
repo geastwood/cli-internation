@@ -10,4 +10,10 @@ let createUser = (username) => {
     }).then(() => ({name: username, id}));
 };
 
+let deleteUser = (username) => {
+    let id = sha1(username);
+    return io.deleteUser(id).then(() => ({name: username, id}))
+};
+
 exports.createUser = createUser;
+exports.deleteUser = deleteUser;

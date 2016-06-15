@@ -15,4 +15,13 @@ let createUser = (user) => {
     }).then(toJson).then(saveToFile);
 };
 
+let deleteUser = (userId) => {
+    return readFile().then(json => {
+        let {users} = json;
+        delete users[userId];
+        return json;
+    }).then(toJson).then(saveToFile);
+};
+
 exports.createUser = createUser;
+exports.deleteUser = deleteUser;
