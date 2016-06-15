@@ -1,11 +1,11 @@
 let program = require('commander');
 let pkg = require('./package.json');
-let validUserCommands = ['create', 'delete', 'list'];
-let validGroupCommands = ['create', 'delete', 'list'];
+let validUserCommands = ['create', 'delete', 'list', 'add-to-group'];
+let validGroupCommands = ['create', 'delete', 'list', 'add-users', 'remove-users'];
 let userCli = require('./src/user-cli');
 let groupCli = require('./src/group-cli');
 let errHandler = err => console.log(err);
-let contains = (arr, item) => arr.indexOf(item) !== -1;
+let {contains} = require('./src//util');
 
 program.version(`Current version: ${pkg.version}`);
 

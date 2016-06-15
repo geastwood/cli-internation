@@ -1,5 +1,5 @@
 let inquirer = require('inquirer');
-let {createUser, deleteUser, listUsers} = require('./api');
+let {createUser, deleteUser, listUsers, listGroups, addUserToGroups} = require('./api');
 
 let userCli = action => {
     if (action === 'create') {
@@ -8,6 +8,8 @@ let userCli = action => {
         return remove();
     } else if (action === 'list') {
         return list();
+    } else if (action === 'add-to-group') {
+        return addToGroups();
     }
 };
 
@@ -43,6 +45,27 @@ let list = () => {
         choices: () => listUsers()
     }).then(({userlist}) => {
         console.log(`userId is ${userlist}`);
+    });
+};
+
+let addToGroups = () => {
+    return inquirer.prompt([
+        {
+            type: 'list',
+            name: 'userlist',
+            message: 'Current list of Users',
+            choices: () => listUsers()
+        },
+        {
+            type: 'checkbox',
+            name: 'grouplist',
+            message: 'List of available Groups',
+            choices: ({userlist}) => {
+                return listGroups(userlist);
+            }
+        }
+    ]).then(addUserToGroups).then(() => {
+        console.log('save user to groups');
     });
 };
 

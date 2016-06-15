@@ -2,6 +2,7 @@ let fs = require('fs');
 let path = require('path');
 let q = require('q');
 let dataFilePath = path.join(__dirname, '../data.json');
+let {contains} = require('./util');
 
 let readFile = () => q.nfcall(fs.readFile, dataFilePath, 'utf8').then(JSON.parse).catch(() => ({}));
 let toJson = v => JSON.stringify(v, null, 2);
@@ -51,8 +52,48 @@ let deleteGroup = (groupId) => {
     })
 };
 
-let listGroups = () => {
-    return readFile().then(json => (json.groups || {}));
+// if pass a userId, select group that doesn't contain this user
+let listGroups = (userId) => {
+    return readFile().then(json => {
+        let {groups, groupUsers} = json;
+
+        if (userId) {
+            console.log(userId);
+            return Object.keys(groups).reduce((carry, groupId) => {
+                if (!groupUsers[groupId]) {
+                    carry[groupId] = groups[groupId];
+                } else {
+                    if (!contains(Object.keys(groupUsers[groupId]), userId)) {
+                        carry[groupId] = groups[groupId];
+                    }
+                }
+                return carry;
+            }, {});
+        }
+
+        return groups || {}
+    });
+};
+
+let addUserToGroups = (data) => {
+    return readFile().then((json) => {
+        let {users, groupUsers} = json;
+
+        if (!groupUsers) {
+            groupUsers = json.groupUsers = {};
+        }
+
+        data.grouplist.forEach(groupId => {
+            let obj, userId = data.userlist;
+            if (!groupUsers[groupId]) {
+                groupUsers[groupId] = {};
+            }
+            obj = groupUsers[groupId];
+            obj[userId] = users[userId]
+        });
+        return json;
+    }).then(toJson).then(saveToFile);
+
 };
 
 exports.createUser = createUser;
@@ -62,3 +103,5 @@ exports.listUsers = listUsers;
 exports.createGroup = createGroup;
 exports.deleteGroup = deleteGroup;
 exports.listGroups = listGroups;
+
+exports.addUserToGroups = addUserToGroups;
