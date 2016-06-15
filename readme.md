@@ -1,4 +1,4 @@
-# CLI-internation
+# CLI-internation (require node 6.0)
 
 A command line interface for user management.
 
