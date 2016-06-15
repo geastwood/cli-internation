@@ -1,7 +1,7 @@
 let inquirer = require('inquirer');
-let {createUser, deleteUser, listUsers} = require('./api');
+let {createGroup, deleteGroup, listGroups} = require('./api');
 
-let userCli = action => {
+let groupCli = action => {
     if (action === 'create') {
         return create();
     } else if (action === 'delete') {
@@ -14,18 +14,18 @@ let userCli = action => {
 let create = () => {
     return inquirer.prompt({
         type: 'input',
-        name: 'username',
-        message: 'Specify a username'
-    }).then(({username}) => createUser(username))
+        name: 'groupname',
+        message: 'Specify a group name'
+    }).then(({groupname}) => createGroup(groupname))
         .then(({name, id}) => console.log(name, id));
 };
 
 let remove = () => {
     return inquirer.prompt({
         type: 'input',
-        name: 'username',
-        message: 'Specify a username'
-    }).then(({username}) => deleteUser(username))
+        name: 'groupname',
+        message: 'Specify a group name'
+    }).then(({groupname}) => deleteGroup(groupname))
         .then(({name, id, msg}) => {
             if (msg) {
                 console.log(msg);
@@ -38,12 +38,12 @@ let remove = () => {
 let list = () => {
     return inquirer.prompt({
         type: 'list',
-        name: 'userlist',
-        message: 'Current list of Users',
-        choices: () => listUsers()
-    }).then(({userlist}) => {
-        console.log(`userId is ${userlist}`);
+        name: 'groupname',
+        message: 'Current list of Groups',
+        choices: () => listGroups()
+    }).then(({groupname}) => {
+        console.log(`groupname is ${groupname}`);
     });
 };
 
-module.exports = userCli;
+module.exports = groupCli;

@@ -3,6 +3,8 @@ let pkg = require('./package.json');
 let validUserCommands = ['create', 'delete', 'list'];
 let validGroupCommands = ['create', 'delete', 'list'];
 let userCli = require('./src/user-cli');
+let groupCli = require('./src/group-cli');
+let errHandler = err => console.log(err);
 let contains = (arr, item) => arr.indexOf(item) !== -1;
 
 program.version(`Current version: ${pkg.version}`);
@@ -13,9 +15,7 @@ program.command('user [cmd]')
         if (!contains(validUserCommands, cmd)) {
             console.log('Error', `${cmd} is not valid, only ${validUserCommands.join(', ')} supported`);
         }
-        userCli(cmd).catch(err => {
-            console.log(err);
-        });
+        userCli(cmd).catch(errHandler);
     });
 
 program.command('group [cmd]')
@@ -24,6 +24,7 @@ program.command('group [cmd]')
         if (!contains(validGroupCommands, cmd)) {
             console.log('Error', `${cmd} is not valid, only ${validGroupCommands.join(', ')} supported`);
         }
+        groupCli(cmd).catch(errHandler);
     });
 
 program.parse(process.argv);
