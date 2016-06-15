@@ -11,7 +11,7 @@ program.version(`Current version: ${pkg.version}`);
 
 program.command('user [cmd]')
     .description(`user commands, ${validUserCommands.join('|')} defaults to 'list'`)
-    .action((cmd, opts) => {
+    .action((cmd = 'list', opts) => {
         if (!contains(validUserCommands, cmd)) {
             console.log('Error', `${cmd} is not valid, only ${validUserCommands.join(', ')} supported`);
         } else {
@@ -21,7 +21,7 @@ program.command('user [cmd]')
 
 program.command('group [cmd]')
     .description(`group commands, ${validGroupCommands.join('|')} defaults to 'list'`)
-    .action((cmd, opts) => {
+    .action((cmd = 'list', opts) => {
         if (!contains(validGroupCommands, cmd)) {
             console.log('Error', `${cmd} is not valid, only ${validGroupCommands.join(', ')} supported`);
         } else {
