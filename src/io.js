@@ -60,10 +60,14 @@ let createGroup = (group) => {
 
 let deleteGroup = (groupId) => {
     return readFile().then(json => {
-        let {groups} = json;
+        let {groups, groupUsers} = json;
         if (groups[groupId]) {
-            delete groups[groupId];
-            return q.fcall(() => json).then(toJson).then(saveToFile);
+            if (groupUsers[groupId] && Object.keys(groupUsers[groupId]).length) {
+                return q.fcall(() => ({status: 2}))
+            } else {
+                delete groups[groupId];
+                return q.fcall(() => json).then(toJson).then(saveToFile);
+            }
         } else {
             return q.fcall(() => ({status: 1}))
         }
@@ -79,7 +83,7 @@ let listGroups = (userId) => {
         }
 
         if (userId) {
-            return Object.keys(groups).reduce((carry, groupId) => {
+            return Object.keys(groups || {}).reduce((carry, groupId) => {
                 if (!groupUsers[groupId]) {
                     carry[groupId] = groups[groupId];
                 } else {
@@ -134,7 +138,7 @@ let addUsersToGroup = (data) => {
     }).then(toJson).then(saveToFile);
 };
 
-let usersInGroup = groupId => readFile().then(json => json.groupUsers[groupId] || {});
+let usersInGroup = groupId => readFile().then(json => (json.groupUsers || {})[groupId] || {});
 
 let removeUsersFromGroup = data => {
     return readFile().then(json => {

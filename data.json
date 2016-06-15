@@ -1,3 +1,41 @@
 {
-  "users": {}
+  "users": {
+    "c5ea71554c774daf7fab320fc3476afc0617eb00": {
+      "name": "u1"
+    },
+    "b9c69e5488ff88b92096f1137382e67fe1172fa6": {
+      "name": "u2"
+    },
+    "e2e5f0fd9054a323948762af20580a9403523e36": {
+      "name": "u3"
+    }
+  },
+  "groups": {
+    "077564fb04323d23b1f76da35a5c35b419711fa4": {
+      "name": "g2"
+    },
+    "e8032f26760bc5821bfa52d117f59d9c45803290": {
+      "name": "g3"
+    },
+    "a46e558d11cb2400bab09c1ca969e615142ef3d6": {
+      "name": "g1"
+    }
+  },
+  "groupUsers": {
+    "a46e558d11cb2400bab09c1ca969e615142ef3d6": {
+      "e2e5f0fd9054a323948762af20580a9403523e36": {
+        "name": "u3"
+      }
+    },
+    "077564fb04323d23b1f76da35a5c35b419711fa4": {
+      "c5ea71554c774daf7fab320fc3476afc0617eb00": {
+        "name": "u1"
+      }
+    },
+    "e8032f26760bc5821bfa52d117f59d9c45803290": {
+      "c5ea71554c774daf7fab320fc3476afc0617eb00": {
+        "name": "u1"
+      }
+    }
+  }
 }

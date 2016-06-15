@@ -97,7 +97,7 @@ let addUsers = () => {
     ]).then(({grouplist, userlist}) => {
         if (userlist) {
             return addUsersToGroup({grouplist, userlist}).then(() => {
-                console.log('Add users to group.');
+                console.log('Add users to group');
             });
         } else {
             return q.fcall(() => {

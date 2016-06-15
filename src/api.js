@@ -35,9 +35,10 @@ let createGroup = (groupname) => {
 
 let deleteGroup = (groupname) => {
     let id = sha1(groupname);
-    return io.deleteGroup(id).then((res) => ({
+
+    return io.deleteGroup(id).then((res = {}) => ({
         name: groupname, id,
-        msg: res && res.status === 1 ? 'group not exist' : null
+        msg: res.status === 1 ? 'Group not exist' : res.status === 2 ? 'Group not empty' : null
     }))
 };
 
